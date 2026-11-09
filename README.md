@@ -3,13 +3,21 @@
 &emsp;**Materia**: Algoritmos y Estructuras de Datos 2 (AED2)<br>
 &emsp;**Tema**: Clase 10 - Archivos de texto y CSV<br>
 &emsp;**Integrantes**: Sandoval Tatiana - Villarroel Camila - Saporito Lionel<br>
+&emsp;**Tablero Kanban:** 
+      [Miro - Grupo 13](https://miro.com/app/board/uXjVEQCZln0=/?moveToWidget=3458764689790402655&cot=14)
 
-### Introducción
-Se pretende realizar un programa para una Clínica de la ciudad de Córdoba que les permita llevar el registro de sus pacientes,
-tambien realizar consultas, listar y exportar los datos. También se podrán importar desde los archivos como una suerte de 
-backub. 
+### Descripción del negocio
+El programa permita llevar un registro de pacientes, realizar consultas, listar y exportar los datos. También se puede importar desde los archivos CSV como una suerte de backub.<br>
+El programa esta dirigido principalmente a entidades de pequeña a mediana envergadura dedicadas al cuidado de la Salud que deseen llevar un registro de sus pacientes contando con: nombre, apellido, edad, telefono y email.
 
-### El proyecto implementará:
+### Problema que resuelve
+Se pretende resolver la situación caótica de no contar con estos registro o de llevarlos de forma desordenada. Poder tener una base de datos solida como punto de partida para agregar a futuro más funcionalidades.
+
+### Tema elegido
+Clase 10 - Archivos de texto y CSV<br>
+Elegimos este tema ya que creemos cubre bastante lo esencial de la materia y nos permite agregar detalles extras.
+
+### El proyecto implementará
 * Maven.
 * OpenCSV 5.9.
 * Lectura y escritura de archivos.
@@ -22,3 +30,22 @@ backub.
 &emsp;**Entorno IDE**: Eclipse<br>
 &emsp;**GitHub**: Repositorio<br>
 &emsp;**Miro**: Tablero Kanban<br>
+
+## Funcionalidades
+1. Menú principal interactivo por consola.
+2. Registro de pacientes.
+3. Listado de pacientes.
+4. Búsqueda por ID.
+5. Modificación de pacientes.
+6. Eliminación de pacientes.
+7. Importación desde archivos CSV.
+8. Exportación a archivos CSV.
+9. Lectura de datos mediante Scanner.
+10. Control básico de errores y validaciones.
+
+## Capturas de pantalla
+(Imágenes o salida de consola.)
+## Pruebas realizadas
+(Resumen y enlace a la carpeta /pruebas.)
+## Conclusiones
+(Qué aprendimos, qué dificultades tuvimos, qué mejoraríamos.)

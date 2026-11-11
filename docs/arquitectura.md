@@ -1,7 +1,7 @@
 # **Arquitectura \- Sistema Pacientes**
 
 ## **Estructura general**
-
+```
 SistemaPacientes/  
 │  
 ├── src/  
@@ -10,16 +10,16 @@ SistemaPacientes/
 │           └── com/  
 │               └── salud/  
 │                   ├── principal/  
-│                   │   └── **Main.java ➔ Interacción con el usuario (Punto de entrada)**  
+│                   │   └── Main.java             ➔ Interacción con el usuario (Punto de entrada) 
 │                   ├── modelo/  
-│                   │   └── **Paciente.java ➔ Modelo de datos (Entidades)**  
+│                   │   └── Paciente.java         ➔ Modelo de datos (Entidades)  
 │                   ├── servicio/  
-│                   │   └── **PacienteService.java ➔ Lógica de negocio y procesamiento**  
+│                   │   └── PacienteService.java  ➔ Lógica de negocio y procesamiento  
 │                   └── archivos/  
-│                       └── **CsvService.java ➔ Gestión y persistencia en archivos CSV**  
+│                       └── CsvService.java       ➔ Gestión y persistencia en archivos CSV  
 │  
-└── **pom.xml ➔ Configuración de dependencias (Maven)**
-
+└── pom.xml ➔ Configuración de dependencias (Maven)
+```
 La arquitectura que vamos a desarrollar utiliza la separación por responsabilidades:
 
 | Paquete | Clase | Responsabilidad |

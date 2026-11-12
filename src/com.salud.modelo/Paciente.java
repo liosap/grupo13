@@ -1,4 +1,4 @@
- package com.salud.modelo;
+package com.salud.modelo;
 
 import java.util.regex.Pattern;
 

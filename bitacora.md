@@ -11,3 +11,10 @@
 - Qué nos trabó: Se complico un poco por donde arrancar para darle forma a la estructura de cara a los temas que vienen.
 - Qué sigue: Definir las clase y sus responsabilidades. El modelo de datos, atributos, métodos para manejar la información.
 - Captura del tablero: kanban/dia-2.png
+
+## Día 3 (11/11/26)
+- Qué hicimos: Se definieron las clases, se trabajo en el modelo de datos que se plasmará en la clase Paciente y se diagramó el orden de desarrollo de las clases.
+- Quién hizo qué: Tatiana fué la responsable de determinar las clases necesarias para nuestro proyecto. Camila fué responsable de llevar adelante el modelo de datos con sus atributos, tipos de datos y métodos. Lionel fué responsable de planificar como se van a desallollar las clases y sus dependencias, asignar roles.
+- Qué nos trabó: Como organizar los clases y cual era la mejor forma de comenzar para no tener que rehacer las clases.
+- Qué sigue: **Etapa 1**. Poner manos a la obra, comenzar a desarrollar. Empezamos con la clase Paciente (modelo) y lo básico de las otras clases que iremos ampliando a medida que avancemos.
+- Captura del tablero: kanban/dia-3a.png, kanban/dia-3b.png, kanban/dia-3c.png

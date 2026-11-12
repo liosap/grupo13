@@ -18,3 +18,10 @@
 - Qué nos trabó: Como organizar los clases y cual era la mejor forma de comenzar para no tener que rehacer las clases.
 - Qué sigue: **Etapa 1**. Poner manos a la obra, comenzar a desarrollar. Empezamos con la clase Paciente (modelo) y lo básico de las otras clases que iremos ampliando a medida que avancemos.
 - Captura del tablero: kanban/dia-3a.png, kanban/dia-3b.png, kanban/dia-3c.png
+
+## Día 4 (12/11/26)
+- Qué hicimos: Se terminó la clase Paciente (modelo), se desarrollo parte de la clase CsvService (persistencia) y se actualizó las clases en GitHub.
+- Quién hizo qué: Camila estuvo a cargo del desarrollo de la Clase Paciente. Tatiana a cargo de la primera parte del desarrollo de la clase CsvService. Lionel responsable de la integración de clases y subida a GitHub.
+- Qué nos trabó: Esta parte fluyo con naturalidad por la familiaridad con la programación se consulto Internet por implementaciones más modernas.
+- Qué sigue: El armado y desarrollo de la clase PacienteService (lógica de negocio y operaciones CRUD)
+- Captura del tablero: kanban/dia-4.png

@@ -50,7 +50,7 @@ Elegimos este tema ya que creemos cubre bastante lo esencial de la materia y nos
 | **2** | 👷 | En proceso... | En proceso... |
 
 ## Pruebas realizadas
-📁 [Pruebas](./prueba/) | Archivos con las pruebas realizadas
+📁 [Pruebas](./pruebas/) | Archivos con las pruebas realizadas
 
 ## Conclusiones
 (Qué aprendimos, qué dificultades tuvimos, qué mejoraríamos.)

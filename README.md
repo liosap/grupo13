@@ -4,7 +4,7 @@
 &emsp;**Tema**: Clase 10 - Archivos de texto y CSV<br>
 &emsp;**Integrantes**: Sandoval Tatiana - Villarroel Camila - Saporito Lionel<br>
 &emsp;**Tablero Kanban:** 
-      [Miro - Grupo 13](https://miro.com/app/board/uXjVEQCZln0=/?moveToWidget=3458764689790402655&cot=14)
+     📊 [Miro - Grupo 13](https://miro.com/app/board/uXjVEQCZln0=/?moveToWidget=3458764689790402655&cot=14)
 
 ### Descripción del negocio
 El programa permita llevar un registro de pacientes, realizar consultas, listar y exportar los datos. También se puede importar desde los archivos CSV como una suerte de backub.<br>
@@ -44,8 +44,13 @@ Elegimos este tema ya que creemos cubre bastante lo esencial de la materia y nos
 10. Control básico de errores y validaciones.
 
 ## Capturas de pantalla
-(Imágenes o salida de consola.)
+| Fase | Captura | Descripción | Objetivo |
+| :---: | :---: | :--- | :--- |
+| **1** | <img width="291" height="163" alt="fase1" src="https://github.com/user-attachments/assets/df5c412b-bdc5-4daf-ae45-e173ebb552a3" /> | La primera fase contempla las operaciones básicas de **alta** y **consulta** de pacientes, junto con las **validaciones** necesarias y el **almacenamiento persistente** de la información. | Contar con una primera versión funcional del sistema que permita administrar pacientes de manera sencilla, asegurando la validación de los datos ingresados, evitando duplicaciones de identificadores y garantizando la conservación de la información registrada. |
+| **2** | 👷 | En proceso... | En proceso... |
+
 ## Pruebas realizadas
-(Resumen y enlace a la carpeta /pruebas.)
+📁 [Pruebas](./prueba/) | Archivos con las pruebas realizadas
+
 ## Conclusiones
 (Qué aprendimos, qué dificultades tuvimos, qué mejoraríamos.)

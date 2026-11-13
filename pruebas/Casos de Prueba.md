@@ -4,9 +4,8 @@
 
 Las pruebas se realizan de manera progresiva a medida qué se incorporan o actualizan métodos y validaciones.
 
-|  |  |  | Resultado |  |  |
-| :---: | ----- | ----- | ----- | ----- | :---: |
-| **Nº** | **Prueba** | **Entrada** | **Esperado** | **Obtenido** | **¿Pasó?** |
+| **Nº** | **Prueba** | **Entrada** | **Resultado Esperado** | **Resultado Obtenido** | **¿Pasó?** |
+| :---: | :--- | :--- | :--- | :--- | :---: |
 | 001 | Mostrar menú principal | Ejecutar la aplicación | Qué muestre las opciones Registrar, Listar y Salir. | Se muestran las opciones Registrar, Listar y Salir. | SI |
 | 002 | Opción registrar  | Opción: 1 | Que solicite ingresar los datos del paciente. | Solicita el ingreso de los datos del paciente | SI |
 | 003 | Registrar paciente | ID: 1, Juan, Pérez, 35, 3511234567, juan@gmail.com | Muestre mensaje: "Paciente registrado correctamente". | Muestra mensaje: "Paciente registrado correctamente". | SI |

@@ -20,7 +20,7 @@ Consideración importante: en la implementación actual, **PacienteService** uti
 | 3 | PacienteService.java | Lionel | Paciente y CsvService |
 | 4 | Main.java | Los tres | Todos los componentes |
 
-**La arquitectura sería:** 
+## **La arquitectura** 
 
               Main.java             ← Punto de entrada  
                   ↓  
@@ -31,3 +31,7 @@ Consideración importante: en la implementación actual, **PacienteService** uti
                      pacientes.csv  ← Archivo CSV
 
 **Paciente** representa los datos; **CsvService** se ocupa de almacenarlos.
+
+## **Diagrama UML**
+
+<img width="50%" alt="general-clases" src="https://github.com/user-attachments/assets/c6aa599e-c783-461b-aa6b-0b59c949c085" />

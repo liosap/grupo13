@@ -47,7 +47,8 @@ Elegimos este tema ya que creemos cubre bastante lo esencial de la materia y nos
 | Fase | Captura | Descripción | Objetivo |
 | :---: | :---: | :--- | :--- |
 | **1** | <img width="291" height="163" alt="fase1" src="https://github.com/user-attachments/assets/df5c412b-bdc5-4daf-ae45-e173ebb552a3" /> | La primera fase contempla las operaciones básicas de **alta** y **consulta** de pacientes, junto con las **validaciones** necesarias y el **almacenamiento persistente** de la información. | Contar con una primera versión funcional del sistema que permita administrar pacientes de manera sencilla, asegurando la validación de los datos ingresados, evitando duplicaciones de identificadores y garantizando la conservación de la información registrada. |
-| **2** | 👷 | En proceso... | En proceso... |
+| **2** | <img width="260" height="188" alt="fase2" src="https://github.com/user-attachments/assets/0fbc639e-e491-425e-8762-283d750f5038" /> | La segunda fase amplía las funcionalidades del sistema **incorporando operaciones** de **modificación** y **eliminación** de pacientes, además de las operaciones de registro y consulta existentes. Mantiene las validaciones de datos y el almacenamiento persistente mediante archivos CSV. | Evolucionar el sistema hacia una herramienta más completa de gestión de pacientes, permitiendo administrar integralmente la información registrada mediante operaciones de alta, consulta, modificación y eliminación, manteniendo la integridad de los datos y evitando duplicaciones de identificadores. |
+| **3** | 👷 | En proceso... | En proceso... |
 
 ## Pruebas realizadas
 📁 [Pruebas](./pruebas/) | Archivos con las pruebas realizadas

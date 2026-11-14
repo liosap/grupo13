@@ -28,3 +28,30 @@ Las pruebas se realizan de manera progresiva a medida qué se incorporan o actua
 | 020 | Ingresar texto como opción de menú | Opción: ABC | Informe que debe ingresar un número entero y vuelve a solicitar la opción. | Informe que debe ingresar un número entero y vuelve a solicitar la opción. | SI |
 | 021 | Seleccionar opción salir | Opción: 3 | Muestre el mensaje de despedida y finaliza la aplicación. | Muestra el mensaje de despedida y finaliza la aplicación. | SI |
 
+## **FASE 2**
+
+Las pruebas de esta fase incorporan las nuevas funcionalidades de búsqueda, modificación y eliminación de pacientes, verificando también que se mantengan las validaciones y el almacenamiento persistente de la información.
+
+| Nº | Prueba | Entrada | Resultado Esperado | Resultado Obtenido | ¿Pasó? |
+| :---: | :---- | :---- | :---- | :---- | :---: |
+| 022 | Mostrar menú principal actualizado | Ejecutar la aplicación | Que muestre las opciones Registrar, Listar, Buscar, Modificar, Eliminar y Salir. | Se muestran todas las opciones correctamente. | SI |
+| 023 | Seleccionar opción buscar | Opción: 3 | Que solicite ingresar el ID del paciente. | Solicita ingresar el ID del paciente. | SI |
+| 024 | Buscar paciente existente | ID: 1 | Que muestre todos los datos del paciente encontrado. | Muestra correctamente los datos del paciente. | SI |
+| 025 | Buscar paciente inexistente | ID: 99 | Que muestre el mensaje "Paciente no encontrado". | Muestra el mensaje "Paciente no encontrado". | SI |
+| 026 | Ingresar ID negativo al buscar | ID: \-5 | Que informe que el valor debe ser mayor que cero y vuelva a solicitarlo. | Informa que el valor debe ser mayor que cero y vuelve a solicitarlo. | SI |
+| 027 | Ingresar texto como ID al buscar | ID: ABC | Que informe que debe ingresar un número entero y vuelva a solicitarlo. | Informa que debe ingresar un número entero y vuelve a solicitarlo. | SI |
+| 028 | Seleccionar opción modificar | Opción: 4 | Que solicite ingresar el ID del paciente a modificar. | Solicita ingresar el ID del paciente. | SI |
+| 029 | Modificar paciente existente | ID: 1 y nuevos datos personales | Que actualice los datos del paciente y muestre el mensaje "Paciente modificado correctamente". | Actualiza los datos y muestra el mensaje correctamente. | SI |
+| 030 | Modificar paciente inexistente | ID: 99 | Que muestre el mensaje "Paciente no encontrado". | Muestra el mensaje "Paciente no encontrado". | SI |
+| 031 | Modificar nombre vacío | Nombre: "" | Que informe que el dato no puede estar vacío y vuelva a solicitarlo. | Informa que el dato no puede estar vacío y vuelve a solicitarlo. | SI |
+| 032 | Modificar apellido vacío | Apellido: "" | Que informe que el dato no puede estar vacío y vuelva a solicitarlo. | Informa que el dato no puede estar vacío y vuelve a solicitarlo. | SI |
+| 033 | Modificar edad fuera de rango | Edad: 150 | Que informe que el valor debe estar entre 0 y 130 y vuelva a solicitarlo. | Informa que el valor debe estar entre 0 y 130 y vuelve a solicitarlo. | SI |
+| 034 | Modificar email con formato inválido | Email: usuario@ | Que muestre un mensaje de error por formato inválido. | Muestra un mensaje de error por formato inválido. | SI |
+| 035 | Verificar modificación persistente | Modificar un paciente y volver a listar | Que se muestren los nuevos datos almacenados en el archivo CSV. | Se muestran los datos actualizados correctamente. | SI |
+| 036 | Seleccionar opción eliminar | Opción: 5 | Que solicite ingresar el ID del paciente a eliminar. | Solicita ingresar el ID del paciente. | SI |
+| 037 | Eliminar paciente existente | ID: 1 | Que elimine el paciente y muestre el mensaje "Paciente eliminado correctamente". | Elimina el paciente y muestra el mensaje correctamente. | SI |
+| 038 | Eliminar paciente inexistente | ID: 99 | Que muestre el mensaje "Paciente no encontrado". | Muestra el mensaje "Paciente no encontrado". | SI |
+| 039 | Ingresar ID negativo al eliminar | ID: \-5 | Que informe que el valor debe ser mayor que cero y vuelva a solicitarlo. | Informa que el valor debe ser mayor que cero y vuelve a solicitarlo. | SI |
+| 040 | Verificar eliminación persistente | Eliminar un paciente y volver a listar | Que el paciente eliminado ya no aparezca en el listado. | El paciente eliminado no aparece en el listado. | SI |
+| 041 | Eliminar paciente y verificar archivo CSV | Eliminar un paciente y consultar el archivo CSV | Que el registro eliminado ya no se encuentre almacenado en el archivo. | El registro eliminado ya no se encuentra en el archivo CSV. | SI |
+| 042 | Seleccionar opción salir | Opción: 6 | Que muestre el mensaje de despedida y finalice la aplicación. | Muestra el mensaje de despedida y finaliza la aplicación. | SI |

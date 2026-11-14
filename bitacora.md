@@ -30,6 +30,13 @@
 - Qué hicimos: Diagramas UML de las Clases Nuevas, se desarrollo parte de la clase PacienteService (CRUD - Servicios) y se ralizaron puebas para las Fase de Desarrollo 1.
 - Quién hizo qué: Camila estuvo a cargo de la construcción de los diagramas UML para las Clases nuevas. Tatiana, la primera parte del desarrollo de la clase PacienteService. Lionel realizo casos de prueba de la fase 1.
 - Qué nos trabó: Nada.
-- Qué sigue: Desarrollo de las clases Fase 2 y Main. Documentación en clases y más pruebas
+- Qué sigue: Desarrollo de las clases Fase 2 y Main. Documentación en clases y más pruebas.
 - Captura del tablero: [dia-5](./kanban/dia-5.png)
+
+## Día 6 (14/11/26)
+- Qué hicimos: Se actualizó la clase PacienteService (CRUD - Servicios), se agregaron métodos y se realizaron pruebas para las Fase de Desarrollo 2.
+- Quién hizo qué: Camila agrego los métodos para modificar y eliminar pacientes a la clase CsvService. Tatiana agrego a la clase Main las nuevas funcionalidades. Lionel trabajo en la capa de servicios en relación a los métodos nuevos incorporados y tambien realizó las pruebas de esta fase.
+- Qué nos trabó: Generar la documentación JavaDoc para que este disponible para la etapa siguiente.
+- Qué sigue: Desarrollo de las clases Fase 3 (final). Documentación y comentarios en todas las clases, verificar con checklist que no quede nada pendiente para el cierre y subir el trabajo final.
+- Captura del tablero: [dia-6](./kanban/dia-6.png)
 

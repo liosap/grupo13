@@ -60,6 +60,62 @@ Las pruebas se organizan en tres fases que acompañan la evolución del Sistema 
 
 📁 [Pruebas](./pruebas/) | Archivos con las pruebas realizadas
 
+## Documentación General
+- 📁 [00-Fuentes consultadas](./doc/fuentes.md)
+- 📁 [01-Análisis Pevio](./doc/analisis.md)
+- 📁 [02-Arquitectura](./doc/arquitectura.md)
+- 📁 [03-Requisitos](./doc/requisitos.md)
+- 📁 [04-Modelo de Datos](./doc/modelo.md)
+- 📁 [05-Orden de desarollo](.docs/orden_desarrollo.md)
+- 📁 [06-Diagramas UML de Clases](./docs/diagramas_uml.md)
+- 📁 [07-Manual de usuario](./doc/manual.md)
+
+## Uso de la Inteligencia Artificial
+Durante el desarrollo del proyecto Sistema de Pacientes se utilizó la Inteligencia Artificial (IA) como una herramienta de asistencia para acompañar distintas etapas del proceso de programación, análisis, revisión y documentación del sistema.
+
+Su utilización tuvo como finalidad asistir a la comprensión de los conceptos de programación nuevos que queríamos incorporar, analizar las responsabilidades de las clases, crear listas para ayudar a identificar posibles errores, mejorar la organización del código y elaborar diagramas para incorporar en documentación técnica que permitiera explicar el funcionamiento del software.
+
+La IA se incorporó como una fuente de consulta y recurso complementario al trabajo del equipo.
 
 ## Conclusiones
-(Qué aprendimos, qué dificultades tuvimos, qué mejoraríamos.)
+### **¿Qué aprendimos?**
+
+Durante el desarrollo de Sistema de Pacientes adquirimos conocimientos y experiencia en la construcción de una aplicación utilizando Java, aplicando progresivamente conceptos de programación orientada a objetos. 
+
+Entre los principales aprendizajes destacamos:
+
+* Comprendimos la importancia de **distribuir las responsabilidades** entre distintas clases, evitando concentrar toda la lógica del programa en una única clase, separado la interacción con el usuario, la representación de los datos, la lógica de negocio y el acceso a los archivos.  
+* **Validación de datos**, incorporando controles para verificar los identificadores, los campos obligatorios, los rangos de edad y el formato del correo electrónico.  
+* Implementamos las **operaciones de creación, consulta, actualización y eliminación** de pacientes.  
+* A utilizar archivos **CSV para almacenar y recuperar información**, evitando que los datos se pierdan al finalizar la ejecución.  
+* **Manejo de archivos** para importar y exportar información desde archivos CSV externos.  
+* Comprendimos la importancia de **controlar los errores** que pueden producirse durante el ingreso de datos y las operaciones con archivos.  
+* Aprendimos a documentar las clases mediante **comentarios y Javadoc**, y a **diseñar casos de prueba** para verificar el comportamiento de las funcionalidades implementadas.
+
+### **¿Qué dificultades tuvimos?**
+
+Durante el desarrollo encontramos diferentes dificultades que nos permitieron comprender mejor el funcionamiento de Java y la relación entre los componentes de una aplicación.
+
+Entre las principales dificultades identificamos:
+
+* **Validación de entradas:** controlar que los datos ingresados por el usuario fueran correctos, contemplando valores vacíos, tipos de datos incorrectos y valores fuera de los rangos establecidos.  
+* **Control de identificadores duplicados:** evitar que se registraran pacientes con identificadores existentes, tanto en las operaciones individuales como durante la importación de archivos.  
+* **Manejo de archivos CSV:** trabajar con la lectura y escritura de archivos, validar sus encabezados y estructuras y controlar posibles errores durante su procesamiento.  
+* **Integración de las clases:** coordinar las responsabilidades de `Main`, `Paciente`, `PacienteService` y `CsvService`, procurando mantener una organización clara y evitar la duplicación de responsabilidades.  
+* **Importación y exportación:** contemplar diferentes situaciones, como archivos inexistentes, registros duplicados, estructuras incorrectas y rutas de destino no válidas.
+
+Estas dificultades nos permitieron reconocer que desarrollar una aplicación no consiste únicamente en implementar funcionalidades, sino también en validar los datos, controlar los errores y verificar que los distintos componentes trabajen correctamente en conjunto.
+
+### **¿Qué mejoraríamos?**
+
+Si continuáramos evolucionando el Sistema de Pacientes, incorporaríamos mejoras orientadas a fortalecer su organización, facilidad de uso, mantenimiento y capacidad de crecimiento.
+
+Entre las principales mejoras posibles proponemos:
+
+* **Implementar una interfaz gráfica:** reemplazar la interacción exclusiva por consola por una interfaz visual que facilite el uso de la aplicación.  
+* **Incorporar una base de datos:** evaluar la utilización de un sistema de gestión de bases de datos para administrar la información cuando aumente el volumen de registros.  
+* **Fortalecer las validaciones:** ampliar los controles sobre los datos ingresados y los archivos importados, contemplando más situaciones de error.  
+* **Mejorar la experiencia del usuario:** incorporar mensajes más descriptivos, confirmaciones antes de eliminar registros y opciones para facilitar la navegación.  
+* **Incorporar nuevas funcionalidades:** permitir ordenar y filtrar pacientes, realizar búsquedas por nombre o apellido y generar reportes de información.  
+* **Mejorar la configuración del sistema:** permitir configurar las rutas de almacenamiento y exportación sin necesidad de modificar directamente el código fuente.
+

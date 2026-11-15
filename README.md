@@ -61,14 +61,14 @@ Las pruebas se organizan en tres fases que acompañan la evolución del Sistema 
 📁 [Pruebas](./pruebas/) | Archivos con las pruebas realizadas
 
 ## Documentación General
-- 📁 [00-Fuentes consultadas](./doc/fuentes.md)
-- 📁 [01-Análisis Pevio](./doc/analisis.md)
-- 📁 [02-Arquitectura](./doc/arquitectura.md)
-- 📁 [03-Requisitos](./doc/requisitos.md)
-- 📁 [04-Modelo de Datos](./doc/modelo.md)
-- 📁 [05-Orden de desarollo](.docs/orden_desarrollo.md)
-- 📁 [06-Diagramas UML de Clases](./docs/diagramas_uml.md)
-- 📁 [07-Manual de usuario](./doc/manual.md)
+- 📑 [00-Fuentes consultadas](./docs/fuentes.md)
+- 📑 [01-Análisis Pevio](./docs/analisis.md)
+- 📑 [02-Arquitectura](./docs/arquitectura.md)
+- 📑 [03-Requisitos](./docs/requisitos.md)
+- 📑 [04-Modelo de Datos](./docs/modelo.md)
+- 📑 [05-Orden de desarollo](.docs/orden_desarrollo.md)
+- 📑 [06-Diagramas UML de Clases](./docs/diagramas_uml.md)
+- 📑 [07-Manual de usuario](./docs/manual.md)
 
 ## Uso de la Inteligencia Artificial
 Durante el desarrollo del proyecto Sistema de Pacientes se utilizó la Inteligencia Artificial (IA) como una herramienta de asistencia para acompañar distintas etapas del proceso de programación, análisis, revisión y documentación del sistema.

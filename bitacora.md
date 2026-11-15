@@ -40,3 +40,9 @@
 - Qué sigue: Desarrollo de las clases Fase 3 (final). Documentación y comentarios en todas las clases, verificar con checklist que no quede nada pendiente para el cierre y subir el trabajo final.
 - Captura del tablero: [dia-6](./kanban/dia-6.png)
 
+## Día 7 (15/11/26)
+- Qué hicimos: Se verificaron toda la documentación Javadoc en las clases. Se realizaron ajustes y correcciones finales a las clases y se subieron a GitHub. Se realizaron los casos de prueba de la Fase 3 (final) y se documentaros. Se verificó el Checklist final, se sacaron conclusiones y se agregaron a la documentación
+- Quién hizo qué: Camila verifico las correcciones finales a las clases CsvServise y PacienteService y pruebas de testing. Tatiana trabajo con el armado de la documentación de las clases y Lionel trabajo con la versión final de la clase Main, el manual del usuario y subio el resto dela documentación a GitHub.
+- Qué nos trabó: Completar la documentación de las clases (javaDoc).
+- Qué sigue: Prepararnos para la defensa oral
+- Captura del tablero: [dia-7](./kanban/dia-7.png)

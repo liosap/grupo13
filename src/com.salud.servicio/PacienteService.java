@@ -1,280 +1,392 @@
 
-package com.salud.servicio;
+package com.salud.archivos;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
-import com.salud.archivos.CsvService;
 import com.salud.modelo.Paciente;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * Servicio que implementa las operaciones de gestión de pacientes y la lógica
- * de negocio asociada.
+ * Servicio responsable de gestionar la lectura y escritura de los datos
+ * de pacientes mediante archivos en formato CSV.
  *
- * Actúa como intermediario entre la interfaz de usuario y el servicio
- * {@link CsvService}, coordinando las operaciones de consulta, alta,
- * modificación, eliminación, importación y exportación de pacientes.
+ * Utiliza la biblioteca OpenCSV para procesar los registros y la API
+ * de archivos de Java NIO para administrar el almacenamiento.
  *
- * La persistencia de los datos se realiza mediante archivos CSV, mientras
- * que las reglas de validación propias de cada paciente se encuentran
- * definidas en la clase {@link Paciente}.
+ * Implementa operaciones de inicialización, lectura, escritura,
+ * importación y exportación de pacientes. Además, verifica la estructura
+ * del archivo, valida los datos mediante el modelo {@link Paciente}
+ * y controla la unicidad de los identificadores.
+ *
+ * Para escribir los archivos utiliza un archivo temporal y posteriormente
+ * intenta reemplazar el destino mediante un movimiento atómico. Si el
+ * sistema de archivos no admite esta operación, utiliza un movimiento
+ * convencional como alternativa.
  *
  * @author Sistema de Salud
  * @version 1.0
  */
-public class PacienteService {
-
-    // Instancia del servicio responsable de la lectura y escritura de archivos CSV.
-    private final CsvService csv = new CsvService();
+public class CsvService {
 
     /**
-     * Resultado de una operación de importación masiva de pacientes.
-     *
-     * Este record permite informar cuántos pacientes se incorporaron a la
-     * colección existente y cuántos fueron omitidos por tener identificadores
-     * que ya estaban registrados.
-     *
-     * @param agregados  Cantidad de pacientes nuevos incorporados.
-     * @param duplicados Cantidad de pacientes omitidos por tener un ID ya existente.
+     * Ruta relativa del archivo CSV principal utilizado para almacenar
+     * los registros de pacientes.
      */
-    public record ResultadoImportacion(int agregados, int duplicados) { }
+    private static final Path ARCHIVO = Path.of("pacientes.csv");
 
     /**
-     * Registra un paciente nuevo en el sistema.
-     *
-     * Antes de incorporarlo, verifica que la referencia recibida no sea nula
-     * y que su identificador no se encuentre registrado.
-     *
-     * Si el ID ya existe, la operación no modifica la colección y devuelve
-     * {@code false}. Si no existe, incorpora el paciente y guarda la colección
-     * actualizada mediante {@link CsvService}.
-     *
-     * @param paciente Objeto {@link Paciente} que se desea registrar.
-     * @return {@code true} si el paciente fue agregado; {@code false} si su ID
-     *         ya se encontraba registrado.
-     * @throws IllegalArgumentException si el paciente recibido es {@code null}.
-     * @throws IOException si ocurre un error de entrada o salida durante la
-     *         lectura o escritura del archivo CSV.
-     * @throws CsvValidationException si se produce un error durante el análisis
-     *         o la validación del formato CSV.
+     * Define los nombres y el orden de las columnas que debe contener
+     * el encabezado de los archivos CSV procesados por el servicio.
      */
-    public boolean agregar(Paciente paciente)
+    private static final String[] ENCABEZADO = {
+            "id", "nombre", "apellido", "edad", "telefono", "email"
+    };
+
+    /**
+     * Verifica la existencia y el contenido del archivo CSV principal.
+     *
+     * Si el archivo no existe o se encuentra vacío, lo crea o inicializa
+     * con el encabezado correspondiente y sin registros de pacientes.
+     *
+     * @throws IOException si ocurre un error de entrada/salida durante
+     *                     la consulta, creación o escritura del archivo.
+     */
+    public void inicializarArchivo() throws IOException {
+        // Comprueba si el archivo principal no existe o tiene un tamaño de cero bytes.
+        if (Files.notExists(ARCHIVO) || Files.size(ARCHIVO) == 0) {
+            escribirArchivo(ARCHIVO, List.of());
+        }
+    }
+
+    /**
+     * Lee los registros de pacientes almacenados en el archivo CSV principal.
+     *
+     * Antes de realizar la lectura, verifica que el archivo esté inicializado.
+     * Posteriormente delega el procesamiento y la validación de sus registros
+     * al método {@link #leerArchivo(Path)}.
+     *
+     * @return lista de pacientes recuperados y validados desde el archivo CSV.
+     * @throws IOException si ocurre un error de entrada/salida o si la
+     *                     estructura o los datos del archivo son inválidos.
+     * @throws CsvValidationException si OpenCSV detecta un error durante
+     *                                el análisis de un registro CSV.
+     */
+    public List<Paciente> leerPacientes()
             throws IOException, CsvValidationException {
-        // Control defensivo para evitar operaciones con referencias nulas
-        if (paciente == null) {
-            throw new IllegalArgumentException("El paciente no puede ser nulo.");
+        inicializarArchivo();
+        return leerArchivo(ARCHIVO);
+    }
+
+    /**
+     * Lee y procesa los registros de un archivo CSV ubicado en la ruta indicada.
+     *
+     * Verifica el encabezado y la cantidad de columnas de cada registro,
+     * convierte los valores numéricos, construye los objetos {@link Paciente}
+     * y comprueba que los identificadores no estén duplicados.
+     *
+     * La lectura se realiza utilizando la codificación UTF-8.
+     *
+     * @param ruta ruta del archivo CSV que se desea procesar.
+     * @return lista de pacientes construidos y validados a partir de los registros.
+     * @throws IOException si ocurre un error de entrada/salida, si el encabezado
+     *                     o la cantidad de columnas son incorrectos, si los datos
+     *                     no cumplen las validaciones del modelo o si existen
+     *                     identificadores duplicados.
+     * @throws CsvValidationException si OpenCSV detecta un error durante
+     *                                el análisis del archivo.
+     */
+    private List<Paciente> leerArchivo(Path ruta)
+            throws IOException, CsvValidationException {
+        List<Paciente> pacientes = new ArrayList<>();
+
+        // Abre el archivo en modo lectura utilizando la codificación UTF-8.
+        try (BufferedReader bufferedReader =
+                     Files.newBufferedReader(ruta, StandardCharsets.UTF_8);
+             CSVReader reader = new CSVReader(bufferedReader)) {
+
+            // Lee el encabezado y comprueba que corresponda con la estructura esperada.
+            String[] encabezadoLeido = reader.readNext();
+            validarEncabezado(encabezadoLeido, ruta);
+
+            String[] fila;
+            int numeroFila = 1;
+
+            // Recorre secuencialmente los registros del archivo CSV.
+            while ((fila = reader.readNext()) != null) {
+                numeroFila++;
+
+                // Comprueba que cada registro contenga exactamente las columnas esperadas.
+                if (fila.length != ENCABEZADO.length) {
+                    throw new IOException("CSV " + ruta + ", fila " + numeroFila
+                            + ": se esperaban 6 columnas y se encontraron "
+                            + fila.length + ".");
+                }
+
+                try {
+                    int id = Integer.parseInt(fila[0].trim());
+                    String nombre = fila[1].trim();
+                    String apellido = fila[2].trim();
+                    int edad = Integer.parseInt(fila[3].trim());
+                    String telefono = fila[4].trim();
+                    String email = fila[5].trim();
+
+                    // Construye el paciente y delega la validación de sus atributos al modelo.
+                    pacientes.add(new Paciente(
+                            id, nombre, apellido, edad, telefono, email
+                    ));
+                } catch (IllegalArgumentException e) {
+                    // Convierte el error de los datos en una excepción de E/S e informa la fila afectada.
+                    throw new IOException("CSV " + ruta + ", fila " + numeroFila
+                            + ": datos inválidos. " + e.getMessage(), e);
+                }
+            }
         }
 
-        // Carga los registros actuales para verificar la unicidad del identificador
-        List<Paciente> pacientes = csv.leerPacientes();
-        if (buscarEnLista(pacientes, paciente.getId()) != null) {
-            return false; // El ID ya existe, se rechaza la inserción
+        // Comprueba que no existan identificadores repetidos entre los pacientes leídos.
+        verificarIdsUnicos(pacientes, ruta);
+        return pacientes;
+    }
+
+    /**
+     * Comprueba que el encabezado del archivo CSV tenga la cantidad y los
+     * nombres de columnas definidos en {@link #ENCABEZADO}.
+     *
+     * La comparación de los nombres no distingue entre mayúsculas y
+     * minúsculas y elimina los espacios externos. También contempla
+     * la presencia de un marcador BOM (Byte Order Mark) en el primer campo.
+     *
+     * @param encabezado arreglo de cadenas correspondiente al encabezado leído.
+     * @param ruta ruta del archivo CSV que se está procesando.
+     * @throws IOException si el encabezado no existe, tiene una cantidad
+     *                     incorrecta de columnas o presenta nombres no válidos.
+     */
+    private void validarEncabezado(String[] encabezado, Path ruta)
+            throws IOException {
+        if (encabezado == null || encabezado.length != ENCABEZADO.length) {
+            throw new IOException("El archivo " + ruta + " no contiene un encabezado CSV válido.");
         }
 
-        // Incorpora el nuevo registro y persiste la colección actualizada
-        pacientes.add(paciente);
-        csv.guardarPacientes(pacientes);
-        return true;
+        // Elimina el marcador BOM del primer campo, si está presente.
+        encabezado[0] = encabezado[0].replace("\uFEFF", "");
+
+        for (int i = 0; i < ENCABEZADO.length; i++) {
+            if (!ENCABEZADO[i].equalsIgnoreCase(encabezado[i].trim())) {
+                throw new IOException("Encabezado CSV incorrecto en " + ruta
+                        + ". Se esperaba: " + String.join(",", ENCABEZADO));
+            }
+        }
     }
 
     /**
-     * Obtiene todos los pacientes registrados en el archivo CSV principal.
+     * Verifica que todos los pacientes de una colección tengan
+     * identificadores únicos.
      *
-     * @return Lista de objetos {@link Paciente} leídos del archivo.
-     * @throws IOException si ocurre un error durante la lectura del archivo.
-     * @throws CsvValidationException si se produce un error durante el análisis
-     *         o la validación del formato CSV.
+     * Utiliza un conjunto {@link Set} para detectar si un identificador
+     * ya fue procesado. Si encuentra una repetición, interrumpe la operación
+     * mediante una excepción.
+     *
+     * @param pacientes colección de pacientes cuyos identificadores se desean verificar.
+     * @param ruta ruta del archivo relacionado con la validación.
+     * @throws IOException si se encuentra un identificador duplicado.
      */
-    public List<Paciente> listar()
-            throws IOException, CsvValidationException {
-        return csv.leerPacientes();
-    }
-
-    /**
-     * Busca un paciente mediante su identificador.
-     *
-     * La búsqueda se realiza sobre la colección de pacientes obtenida del
-     * archivo CSV principal.
-     *
-     * @param id Identificador del paciente que se desea localizar.
-     * @return El objeto {@link Paciente} correspondiente al ID indicado,
-     *         o {@code null} si no existe un paciente con ese identificador.
-     * @throws IOException si ocurre un error durante la lectura del archivo.
-     * @throws CsvValidationException si se produce un error durante el análisis
-     *         o la validación del formato CSV.
-     */
-    public Paciente buscarPorId(int id)
-            throws IOException, CsvValidationException {
-        return buscarEnLista(csv.leerPacientes(), id);
-    }
-
-    /**
-     * Busca un paciente dentro de una lista en memoria mediante su ID.
-     *
-     * Recorre secuencialmente la colección hasta encontrar un paciente cuyo
-     * identificador coincida con el valor solicitado.
-     *
-     * @param pacientes Lista de pacientes en la que se realizará la búsqueda.
-     * @param id Identificador del paciente que se desea localizar.
-     * @return El paciente encontrado o {@code null} si no existe coincidencia.
-     */
-    private Paciente buscarEnLista(List<Paciente> pacientes, int id) {
+    private void verificarIdsUnicos(List<Paciente> pacientes, Path ruta)
+            throws IOException {
+        Set<Integer> ids = new HashSet<>();
         for (Paciente paciente : pacientes) {
-            if (paciente.getId() == id) {
-                return paciente;
+            // Set.add() devuelve false cuando el identificador ya se encuentra en el conjunto.
+            if (!ids.add(paciente.getId())) {
+                throw new IOException("El archivo " + ruta
+                        + " contiene el ID duplicado " + paciente.getId() + ".");
             }
         }
-        return null;
     }
 
     /**
-     * Elimina de la colección al paciente cuyo identificador coincide con el
-     * valor recibido.
+     * Guarda la colección de pacientes en el archivo CSV principal.
      *
-     * Si se encuentra y elimina al menos un registro, guarda la colección
-     * actualizada en el archivo CSV principal.
+     * Delega la escritura y las validaciones correspondientes
+     * al método {@link #escribirArchivo(Path, List)}.
      *
-     * @param id Identificador del paciente que se desea eliminar.
-     * @return {@code true} si se eliminó un paciente; {@code false} si no
-     *         se encontró ningún registro con ese ID.
-     * @throws IOException si ocurre un error durante la lectura o escritura
-     *         del archivo CSV.
-     * @throws CsvValidationException si se produce un error durante el análisis
-     *         o la validación del formato CSV.
+     * @param pacientes lista de pacientes que se desean almacenar.
+     * @throws IOException si ocurre un error durante la escritura
+     *                     o el reemplazo del archivo.
+     * @throws IllegalArgumentException si la lista es nula o contiene
+     *                                  algún elemento nulo.
      */
-    public boolean eliminar(int id)
-            throws IOException, CsvValidationException {
-        List<Paciente> pacientes = csv.leerPacientes();
-
-        // Elimina de la lista todos los registros cuyo ID coincide con el indicado
-        boolean eliminado = pacientes.removeIf(p -> p.getId() == id);
-
-        if (eliminado) {
-            // Persiste los cambios solo si se removió efectivamente algún registro
-            csv.guardarPacientes(pacientes);
-        }
-        return eliminado;
+    public void guardarPacientes(List<Paciente> pacientes) throws IOException {
+        escribirArchivo(ARCHIVO, pacientes);
     }
 
     /**
-     * Modifica los datos de un paciente que ya se encuentra registrado.
+     * Escribe una colección de pacientes en un archivo CSV de destino.
      *
-     * Localiza al paciente mediante el ID del objeto recibido. Si existe,
-     * actualiza su nombre, apellido, edad, teléfono y correo electrónico,
-     * utilizando los métodos de modificación definidos en {@link Paciente}.
+     * Primero comprueba que los identificadores sean únicos y prepara
+     * el directorio de destino. Luego genera un archivo temporal en el
+     * mismo directorio, escribe el encabezado y los registros utilizando
+     * OpenCSV y codificación UTF-8.
      *
-     * El identificador del paciente existente no se modifica.
+     * Una vez finalizada la escritura, intenta reemplazar el archivo
+     * de destino mediante un movimiento atómico. Si esta operación no
+     * está soportada por el sistema de archivos, utiliza un movimiento
+     * convencional. Si el reemplazo no se completa, intenta eliminar
+     * el archivo temporal.
      *
-     * @param actualizado Objeto {@link Paciente} que contiene el ID del
-     *        paciente a localizar y los nuevos datos que se desean aplicar.
-     * @return {@code true} si el paciente fue encontrado y modificado;
-     *         {@code false} si no existe un paciente con ese ID.
-     * @throws IllegalArgumentException si el objeto recibido es {@code null}.
-     * @throws IOException si ocurre un error durante la lectura o escritura
-     *         del archivo CSV.
-     * @throws CsvValidationException si se produce un error durante el análisis
-     *         o la validación del formato CSV.
+     * @param destino ruta del archivo CSV que se desea crear o reemplazar.
+     * @param pacientes lista de pacientes que se desean almacenar.
+     * @throws IOException si ocurre un error durante la creación del directorio,
+     *                     la generación del archivo temporal, la escritura,
+     *                     el reemplazo o la limpieza del archivo temporal.
+     * @throws IllegalArgumentException si la lista es nula o contiene
+     *                                  algún paciente nulo.
      */
-    public boolean modificar(Paciente actualizado)
-            throws IOException, CsvValidationException {
-        if (actualizado == null) {
-            throw new IllegalArgumentException("El paciente actualizado no puede ser nulo.");
+    private void escribirArchivo(Path destino, List<Paciente> pacientes)
+            throws IOException {
+        if (pacientes == null) {
+            throw new IllegalArgumentException("La lista de pacientes no puede ser nula.");
         }
 
-        List<Paciente> pacientes = csv.leerPacientes();
-        Paciente existente = buscarEnLista(pacientes, actualizado.getId());
+        // Verifica que no existan identificadores duplicados antes de escribir el archivo.
+        verificarIdsUnicos(pacientes, destino);
 
-        if (existente == null) {
-            return false; // El paciente a modificar no se encuentra registrado
+        Path absoluto = destino.toAbsolutePath();
+        Path directorio = absoluto.getParent();
+        if (directorio != null) {
+            Files.createDirectories(directorio);
         }
 
-        // Actualización de los campos internos; las reglas de validación recaen en el modelo
-        existente.setNombre(actualizado.getNombre());
-        existente.setApellido(actualizado.getApellido());
-        existente.setEdad(actualizado.getEdad());
-        existente.setTelefono(actualizado.getTelefono());
-        existente.setEmail(actualizado.getEmail());
+        // Crea un archivo temporal en el directorio del archivo de destino.
+        Path temporal = Files.createTempFile(
+                directorio, "pacientes-", ".tmp"
+        );
 
-        csv.guardarPacientes(pacientes);
-        return true;
-    }
+        boolean reemplazado = false;
+        try {
+            // Escribe los registros CSV en el archivo temporal utilizando UTF-8 y OpenCSV.
+            try (Writer output = Files.newBufferedWriter(
+                    temporal, StandardCharsets.UTF_8);
+                 CSVWriter writer = new CSVWriter(output)) {
 
-    /**
-     * Importa pacientes desde un archivo CSV externo y los incorpora a la
-     * colección principal cuando sus identificadores no se encuentran
-     * registrados.
-     *
-     * Los pacientes cuyo ID ya existe en la colección principal se omiten
-     * y se contabilizan como duplicados.
-     *
-     * La lectura y validación del archivo externo se delega a {@link CsvService}.
-     * Por lo tanto, los registros inválidos o los identificadores duplicados
-     * dentro del propio archivo de importación pueden provocar una excepción
-     * antes de que se realice la incorporación.
-     *
-     * @param ruta Ruta del archivo CSV externo desde el cual se importarán
-     *        los pacientes.
-     * @return Un objeto {@link ResultadoImportacion} con las cantidades
-     *         de pacientes agregados y duplicados.
-     * @throws IOException si ocurre un error de lectura o escritura, si el
-     *         archivo externo no puede leerse o si contiene datos inválidos.
-     * @throws CsvValidationException si se produce un error durante el análisis
-     *         o la validación del formato CSV externo.
-     */
-    public ResultadoImportacion importar(String ruta)
-            throws IOException, CsvValidationException {
-        List<Paciente> importados = csv.importarPacientes(ruta);
-        List<Paciente> actuales = csv.leerPacientes();
+                writer.writeNext(ENCABEZADO);
+                for (Paciente paciente : pacientes) {
+                    if (paciente == null) {
+                        throw new IllegalArgumentException(
+                                "La lista contiene un paciente nulo.");
+                    }
+                    writer.writeNext(new String[]{
+                            String.valueOf(paciente.getId()),
+                            paciente.getNombre(),
+                            paciente.getApellido(),
+                            String.valueOf(paciente.getEdad()),
+                            paciente.getTelefono(),
+                            paciente.getEmail()
+                    });
+                }
+            }
 
-        // Mapeo inicial de IDs ya registrados para control de colisiones en tiempo O(1)
-        Set<Integer> idsExistentes = new HashSet<>();
-        for (Paciente actual : actuales) {
-            idsExistentes.add(actual.getId());
-        }
-
-        int agregados = 0;
-        int duplicados = 0;
-
-        // Evaluación de cada paciente importado
-        for (Paciente nuevo : importados) {
-            // Set.add() retorna true si el elemento no existía en el conjunto
-            if (idsExistentes.add(nuevo.getId())) {
-                actuales.add(nuevo);
-                agregados++;
-            } else {
-                duplicados++;
+            // Intenta reemplazar el archivo de destino mediante un movimiento atómico.
+            try {
+                Files.move(temporal, absoluto,
+                        StandardCopyOption.REPLACE_EXISTING,
+                        StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException e) {
+                // Utiliza un movimiento convencional si el sistema de archivos no admite el movimiento atómico.
+                Files.move(temporal, absoluto,
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+            reemplazado = true;
+        } finally {
+            // Si el reemplazo no se completó, intenta eliminar el archivo temporal.
+            if (!reemplazado) {
+                Files.deleteIfExists(temporal);
             }
         }
-
-        // Consolidación de cambios únicamente si se añadieron registros nuevos
-        if (agregados > 0) {
-            csv.guardarPacientes(actuales);
-        }
-
-        return new ResultadoImportacion(agregados, duplicados);
     }
 
     /**
-     * Exporta todos los pacientes registrados en la colección principal
-     * hacia un archivo CSV ubicado en la ruta indicada.
+     * Importa los registros de pacientes desde un archivo CSV externo.
      *
-     * La operación obtiene primero la lista actual de pacientes y delega
-     * la escritura del archivo de destino a {@link CsvService}.
+     * Valida la ruta recibida y comprueba que corresponda a un archivo
+     * regular con permisos de lectura. Luego procesa su contenido
+     * mediante el método {@link #leerArchivo(Path)}.
      *
-     * @param ruta Ruta del archivo CSV externo donde se exportarán los datos.
-     * @return Cantidad de pacientes exportados.
-     * @throws IOException si ocurre un error durante la lectura o escritura
-     *         de los archivos involucrados, o si la ruta de destino no es válida.
-     * @throws CsvValidationException si se produce un error durante el análisis
-     *         o la validación del archivo CSV principal.
+     * Esta operación lee el archivo externo, pero no modifica directamente
+     * el archivo CSV principal de almacenamiento.
+     *
+     * @param ruta ubicación del archivo CSV externo que se desea importar.
+     * @return lista de pacientes recuperados y validados desde el archivo externo.
+     * @throws IOException si el archivo no existe, no es un archivo regular,
+     *                     no tiene permisos de lectura o presenta errores
+     *                     durante su procesamiento.
+     * @throws CsvValidationException si OpenCSV detecta un error durante
+     *                                el análisis del archivo.
+     * @throws IllegalArgumentException si la ruta es nula o está vacía,
+     *                                  o si no puede convertirse en una ruta válida.
      */
-    public int exportar(String ruta)
+    public List<Paciente> importarPacientes(String ruta)
             throws IOException, CsvValidationException {
-        List<Paciente> pacientes = csv.leerPacientes();
-        csv.exportarPacientes(pacientes, ruta);
-        return pacientes.size();
+        Path archivoExterno = validarRuta(ruta);
+        if (!Files.isRegularFile(archivoExterno) || !Files.isReadable(archivoExterno)) {
+            throw new IOException("No se puede leer el archivo: " + archivoExterno);
+        }
+        return leerArchivo(archivoExterno);
+    }
+
+    /**
+     * Exporta una colección de pacientes hacia un archivo CSV externo.
+     *
+     * Comprueba que la ruta de destino no corresponda al archivo principal
+     * de almacenamiento para evitar su sobrescritura accidental.
+     * La escritura se delega al método {@link #escribirArchivo(Path, List)}.
+     *
+     * @param pacientes lista de pacientes que se desean exportar.
+     * @param ruta ruta del archivo CSV de destino.
+     * @throws IOException si la ruta corresponde al archivo principal
+     *                     o si ocurre un error durante la escritura.
+     * @throws IllegalArgumentException si la ruta no es válida o la lista
+     *                                  de pacientes es nula o contiene
+     *                                  algún elemento nulo.
+     */
+    public void exportarPacientes(List<Paciente> pacientes, String ruta)
+            throws IOException {
+        Path destino = validarRuta(ruta).toAbsolutePath();
+        // Evita que la exportación sobrescriba el archivo CSV principal.
+        if (destino.equals(ARCHIVO.toAbsolutePath())) {
+            throw new IOException("La exportación no puede sobrescribir el archivo principal.");
+        }
+        escribirArchivo(destino, pacientes);
+    }
+
+    /**
+     * Valida una ruta recibida como cadena de texto y la convierte
+     * en un objeto {@link Path} absoluto y normalizado.
+     *
+     * Elimina los espacios externos de la cadena antes de construir
+     * la ruta y aplica la normalización para resolver sus componentes
+     * relativos, como {@code .} y {@code ..}.
+     *
+     * @param ruta cadena de texto que representa la ubicación del archivo.
+     * @return ruta absoluta y normalizada.
+     * @throws IllegalArgumentException si la cadena es nula, está vacía
+     *                                  o contiene una ruta que no puede
+     *                                  convertirse en un objeto {@code Path}.
+     */
+    private Path validarRuta(String ruta) {
+        if (ruta == null || ruta.isBlank()) {
+            throw new IllegalArgumentException("Debe indicar una ruta de archivo.");
+        }
+        return Path.of(ruta.trim()).toAbsolutePath().normalize();
     }
 }

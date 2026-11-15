@@ -51,7 +51,15 @@ Elegimos este tema ya que creemos cubre bastante lo esencial de la materia y nos
 | **3** | <img width="257" height="233" alt="fase3" src="https://github.com/user-attachments/assets/b6d3b508-fa69-47ad-a42f-e231af9879be" /> | Última etapa del desarrollo. Integra las cuatro clases principales del sistema: **Main**, **Paciente**, **PacienteService** y **CsvService**. Consolida las operaciones de registro, consulta, modificación y eliminación, e incorpora la **importación y exportación** de pacientes mediante archivos **CSV**. | Consolidar una versión integrada y funcional del Sistema de Pacientes, que permita gestionar los registros de los pacientes, importar y exportar información,manteniendo la persistencia de los datos mediante archivos CSV. |
 
 ## Pruebas realizadas
+
+Las pruebas se organizan en tres fases que acompañan la evolución del Sistema de Pacientes:
+
+- **Fase 1:** verifica el registro y la consulta de pacientes, junto con las validaciones iniciales y la persistencia de los datos.
+- **Fase 2:** comprueba la incorporación de las operaciones de búsqueda, modificación y eliminación, manteniendo las funcionalidades anteriores.
+- **Fase 3:** verifica la integración de las cuatro clases principales, la importación y exportación de archivos CSV, el control de duplicados y la persistencia de los registros.
+
 📁 [Pruebas](./pruebas/) | Archivos con las pruebas realizadas
+
 
 ## Conclusiones
 (Qué aprendimos, qué dificultades tuvimos, qué mejoraríamos.)
